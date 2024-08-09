@@ -1,5 +1,7 @@
 pipeline {
   agent any
+  ptions {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
 
   stages {
         stage('Checkout') {
