@@ -2,20 +2,6 @@ pipeline {
   agent any
 
   stages {
-    stage('Checkout') {
-            steps {
-                script {
-                    def branchName = params.BRANCH
-                    echo "Checking out branch: ${branchName}"
-
-                    checkout([$class: 'GitSCM',
-                        branches: [[name: "*/${branchName}"]],
-                        userRemoteConfigs: [[url: '${MY_CODE}']]
-                    ])
-                }
-            }
-        }
-    }
     stage('Build') {
       steps {
           script {
