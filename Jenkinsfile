@@ -33,7 +33,9 @@ pipeline {
                 script {
                     def imageTag = "latest-${env.BUILD_NUMBER}"
                     echo "Running tests on Docker image with tag: ${imageTag}"
-                    sh "docker run -d -p 8000:5000 ${IMAGE_NAME}:${imageTag}"
+                    sh "docker stop ${CONTAINER_NAME}"
+                    sh "docker rm ${CONTAINER_NAME}"
+                    sh "docker run -d --name ${CONTAINER_NAME} -p 8000:5000 ${IMAGE_NAME}:${imageTag}"
                 }
             }
         }
