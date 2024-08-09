@@ -10,7 +10,7 @@ pipeline {
 
                     checkout([$class: 'GitSCM',
                         branches: [[name: "*/${branchName}"]],
-                        userRemoteConfigs: [[url: "${params.MY_CODE}"]]
+                        userRemoteConfigs: [[url: "${MY_CODE}"]]
                     ])
                 }
             }
