@@ -33,7 +33,7 @@ pipeline {
                 script {
                     def imageTag = "latest-${env.BUILD_NUMBER}"
                     echo "Running tests on Docker image with tag: ${imageTag}"
-                    sh "docker run ${IMAGE_NAME}:${imageTag} python -m pytest app/tests/"
+                    sh "docker run -p 8000:5000 ${IMAGE_NAME}:${imageTag} python -m pytest app/tests/"
                 }
             }
         }
