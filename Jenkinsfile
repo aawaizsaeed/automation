@@ -61,10 +61,10 @@ pipeline {
 
                         echo "Applying Kubernetes configuration"
                         try {
-                            sh "ssh kubemaster@192.168.95.155 'kubectl apply -f /root/deployment.yaml'"
+                            sh "ssh kubemaster@192.168.95.155 kubectl apply -f ."
                         } catch (Exception e) {
                             echo "Failed to apply configuration. Creating resources instead."
-                            sh "ssh kubemaster@192.168.100.12 'kubectl create -f /root/deployment.yaml'"
+                            sh "ssh kubemaster@192.168.100.12 kubectl create -f ."
                         }
                     }
                 }
