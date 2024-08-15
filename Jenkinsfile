@@ -57,7 +57,7 @@ pipeline {
                 sshagent(credentials: ['k8s']) {
                     script {     
                         echo "Copying Kubernetes deployment file to remote machine"
-                        sh "scp -v -o StrictHostKeyChecking=no deployment.yaml kubemaster@192.168.95.155:/root"
+                        sh "scp -v -o StrictHostKeyChecking=no deployment.yaml kubemaster@192.168.95.155:/tmp/"
 
                         echo "Applying Kubernetes configuration"
                         try {
