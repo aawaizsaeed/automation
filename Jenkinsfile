@@ -1,10 +1,10 @@
 pipeline {
-  agent any
-  options {
+    agent any
+    options {
         buildDiscarder(logRotator(numToKeepStr: '5'))
-  }
+    }
 
-  stages {
+    stages {
         stage('Checkout') {
             steps {
                 script {
@@ -41,19 +41,37 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "DOCKER_REGISTRY_CREDS", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                withCredentials([usernamePassword(credentialsId: 'DOCKER_REGISTRY_CREDS', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                     script {
-                      def imageTag = "latest-${env.BUILD_NUMBER}"
-                      echo "Logging in to Docker registry"
-                      sh "echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin docker.io"
-                      echo "Pushing Docker image with tag: ${imageTag}"
-                      sh "docker push ${DOCKER_BFLASK_IMAGE}:${imageTag}"
+                        def imageTag = "latest-${env.BUILD_NUMBER}"
+                        echo "Logging in to Docker registry"
+                        sh "echo \$DOCKER_PASSWORD | docker login -u \$DOCKER_USERNAME --password-stdin docker.io"
+                        echo "Pushing Docker image with tag: ${imageTag}"
+                        sh "docker push ${DOCKER_BFLASK_IMAGE}:${imageTag}"
+                    }
+                }
+            }
+        }
+        stage('Deploy to K8s') {
+            steps {
+                sshagent(['k8s']) {
+                    script {
+                        echo "Copying Kubernetes deployment file to remote machine"
+                        sh "scp -o StrictHostKeyChecking=no deployment.yaml kubemaster@192.168.100.12:/tmp/"
+
+                        echo "Applying Kubernetes configuration"
+                        try {
+                            sh "ssh kubemaster@192.168.100.12 'kubectl apply -f /tmp/deployment.yaml'"
+                        } catch (Exception e) {
+                            echo "Failed to apply configuration. Creating resources instead."
+                            sh "ssh kubemaster@192.168.100.12 'kubectl create -f /tmp/deployment.yaml'"
+                        }
                     }
                 }
             }
         }
     }
-    
+
     post {
         always {
             echo "Logging out from Docker registry"
