@@ -52,24 +52,6 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to K8s') {
-            steps {
-                sshagent(['k8s']) {
-                    script {     
-                        echo "Copying Kubernetes deployment file to remote machine"
-                        sh "scp -v -o StrictHostKeyChecking=no deployment.yaml kubemaster@192.168.95.155:/tmp/"
-
-                        echo "Applying Kubernetes configuration"
-                        try {
-                            sh "ssh kubemaster@192.168.95.155 kubectl apply -f ."
-                        } catch (Exception e) {
-                            echo "Failed to apply configuration. Creating resources instead."
-                            sh "ssh kubemaster@192.168.95.155 kubectl create -f ."
-                        }
-                    }
-                }
-            }
-        }
     }
 
     post {
