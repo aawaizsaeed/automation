@@ -14,7 +14,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-project
-  namespace: my-namespace
+  namespace: my-app
 spec:
   replicas: 4
   selector:
