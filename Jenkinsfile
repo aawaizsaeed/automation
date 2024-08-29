@@ -24,7 +24,7 @@ pipeline {
                     def imageTag = "latest-${env.BUILD_NUMBER}"
                     echo "Building Docker image with tag: ${imageTag}"
                     sh "docker build -t ${IMAGE_NAME}:${imageTag} ."
-                    sh "docker tag ${IMAGE_NAME}:${imageTag} ${DOCKER_BFLASK_IMAGE}:${imageTag}"
+                    sh "docker tag ${IMAGE_NAME}:${imageTag} ${DOCKER_FE_IMAGE}:${imageTag}"
                 }
             }
         }
